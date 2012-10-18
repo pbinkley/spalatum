@@ -1,0 +1,21 @@
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io.connect('http://localhost:3000');
+  /*socket.on('news', function (data) {
+    console.log(data);
+    socket.emit('my other event', { my: 'data' });
+  });*/
+  var username = Math.random();  
+    
+  socket.emit('onConnect', username);
+  socket.emit('fileUpload', "Node.JS is cool");
+    
+  function uploadFile(data){
+      
+  }
+  
+</script>
+<form action="/ops/imgUpload" method="post" enctype="multipart/form-data">
+<p>Image: <input type="file" name="image"/></p>
+<p><input type="submit" value="Upload"/></p>
+</form>
