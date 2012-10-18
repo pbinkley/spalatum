@@ -2,16 +2,22 @@
 # -*- coding: utf-8 -*-
 
 import sqlite3 as lite
-import sys
+import os, sys
 
-repo = '../repo/'
+def starthtml(f):
+	f.write("<html><head><title>Spalatum Index</title></head>")
+	f.write("<body><h1>Spalatum Index</h1>")
+	f.write("<ul>")
+	
+def endhtml(f):
+	f.write("</ul></body></html>")
+	f.close()
+
+repo = '../testrepo/'
 f = open(repo + 'index.html', 'w')
+starthtml(f)
 
 con = lite.connect('spalatum.db')
-
-f.write("<html><head><title>Spalatum Index</title></head>")
-f.write("<body><h1>Spalatum Index</h1>")
-f.write("<ul>")
 
 with con:
 	con.row_factory = lite.Row
@@ -23,6 +29,12 @@ with con:
 
 	for row in rows:
 	    f.write("<li>%s. <a href=\"%s\">%s</a></li>" % (row["id"], row["path"], row["title"]))
-
-f.write("</ul></body></html>")
-f.close()
+	    path = row["path"]
+	    
+	    
+	    item = open(repo + path + "/index.html", "w")
+	    starthtml(item)
+	    item.write("<p>This is " + row["title"] + ".</p>")
+	    endhtml(item)
+	    
+endhtml(f)
