@@ -115,8 +115,8 @@ app.post('/ops/imgUpload', function(req, res){
 	    "<tr><td>Mime-type</td><td>" + req.files.image.type + "</td></tr>" +
 	    "<tr><td>Object directory</td><td>" + tspath + "</td></tr>" +
 	    "<tr><td>JPG conversion result</td><td>" + stdout + "</td></tr>" +
-	    "</table>" +
-	    "</body></html>";
+		"</table>" +
+		"</body></html>";
     res.send(r);
     
     }
