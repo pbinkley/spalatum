@@ -83,6 +83,15 @@ app.post('/ops/imgUpload', function(req, res){
 		else console.log('pow!')
 	});
 
+	fs.writeFile(tspath + "/upload.json", JSON.stringify(req.files), function(err) {
+    	if(err) {
+        	console.log(err);
+	    } else {
+    	    console.log("The file was saved!");
+	    }
+	}); 
+
+
 	// compute file paths for upload file and output file (=output of conversion to .jpg)
 	var targetfile = tspath + "/" + req.files.image.name;
     var outputfile = targetfile.substr(0, targetfile.lastIndexOf('.')) + ".jpg";
