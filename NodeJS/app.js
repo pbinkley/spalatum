@@ -74,9 +74,13 @@ app.post('/ops/imgUpload', function(req, res){
 	exec("convert " + imagefile + " " + outputfile + "; identify " + outputfile, output);
     function output(error, stdout, stderr) {
     
-    
+    var moment = require('moment');
+	var tsstring = req.files.image.lastModifiedDate;
+    var tspath = moment(tsstring).format("YYYY/MM/DD");
     r = "<html><body><p>Size: " + req.files.image.size + "</p><p>Mime-type: " + 
-    	req.files.image.type + "</p><p>Convert result: " + stdout + "</p></body></html>";
+    	req.files.image.type + "</p><p>Convert result: " + stdout + "</p><p>" + 
+    	tspath
+ + "</p></body></html>";
     res.send(r);
     
     }
