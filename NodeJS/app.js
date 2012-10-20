@@ -8,6 +8,7 @@ var express = require('express')
 , user = require('./routes/user')
 , path = require('path');
 var fs = require('fs');
+var mkdirp = require('mkdirp');
 
 var app = express();
 var server = require('http').createServer(app);
@@ -65,19 +66,40 @@ app.post('/ops/imgUpload', function(req, res){
      filename: [Getter],
      mime: [Getter] } }
     */
+    // generate random string: 6 chars, [0-9][a-z]
+    // TODO implement NOID
+    var id = Math.random().toString(36).substring(12);
     
-    var imagefile = req.files.image.path;
-    var outputfile = 'test.jpg';
+    var uploadfile = req.files.image.path;
+
+	// parse file timestamp, generate path in repo for this object
+    var moment = require('moment');
+	var tsstring = req.files.image.lastModifiedDate;
+    var tspath = "../repo/" + moment(tsstring).format("YYYY/MM/DD") + "/" + id;
+
+	// make object directory (uses node-mkdirp)
+	mkdirp(tspath, function (err) {
+		if (err) console.error(err)
+		else console.log('pow!')
+	});
+
+	// compute file paths for upload file and output file (=output of conversion to .jpg)
+	var targetfile = tspath + "/" + req.files.image.name;
+    var outputfile = targetfile.substr(0, targetfile.lastIndexOf('.')) + ".jpg";
     
     var sys = require('sys')
 	var exec = require('child_process').exec;
-	exec("convert " + imagefile + " " + outputfile + "; identify " + outputfile, output);
-    function output(error, stdout, stderr) {
-    
-    var moment = require('moment');
-	var tsstring = req.files.image.lastModifiedDate;
-    var tspath = moment(tsstring).format("YYYY/MM/DD");
-    r = "<html><body><p>Size: " + req.files.image.size + "</p><p>Mime-type: " + 
+	// move upload file into object directory, using original file name
+	exec("mv \"" + uploadfile + "\" \"" + targetfile + "\"", output1);
+	
+    // after mv, run convert to generate .jpg
+    function output1(error, stdout, stderr) {
+		exec("convert \"" + targetfile + "\" \"" + outputfile + "\"; identify \"" + outputfile + "\"", output2);
+	}
+	
+	// after convert, generate html output for response
+    function output2(error, stdout, stderr) {
+	    r = "<html><body><p>Size: " + req.files.image.size + "</p><p>Mime-type: " + 
     	req.files.image.type + "</p><p>Convert result: " + stdout + "</p><p>" + 
     	tspath
  + "</p></body></html>";
