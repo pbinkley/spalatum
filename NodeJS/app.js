@@ -108,10 +108,15 @@ app.post('/ops/imgUpload', function(req, res){
 	
 	// after convert, generate html output for response
     function output2(error, stdout, stderr) {
-	    r = "<html><body><p>Size: " + req.files.image.size + "</p><p>Mime-type: " + 
-    	req.files.image.type + "</p><p>Convert result: " + stdout + "</p><p>" + 
-    	tspath
- + "</p></body></html>";
+	    r = "<html><body><h1>Spalatum upload complete</h1>" +
+	    "<table>" +
+	    "<tr><td>File</td><td>" + req.files.image.name + "</td></tr>" +
+	    "<tr><td>Size</td><td>" + req.files.image.size + "</td></tr>" +
+	    "<tr><td>Mime-type</td><td>" + req.files.image.type + "</td></tr>" +
+	    "<tr><td>Object directory</td><td>" + tspath + "</td></tr>" +
+	    "<tr><td>JPG conversion result</td><td>" + stdout + "</td></tr>" +
+	    "</table>" +
+	    "</body></html>";
     res.send(r);
     
     }
