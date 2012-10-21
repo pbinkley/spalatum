@@ -5,7 +5,7 @@ See Google Doc for planning: https://docs.google.com/document/d/15jTCsEcVvpbQx1X
 Instructions
 
 - install python, node.js
-- in sqlite directory, run "createdb.py": creates spalatum.py
+- in sqlite directory, run "createdb.py": creates spalatum.db
 - in NodeJS directory run "node app.js" to start the node.js server
 - visit http://localhost:3000/ , and upload some images
 - in sqlite directory, run "intermediates.py" to generate the navigational html
