@@ -9,6 +9,7 @@ var express = require('express')
 , path = require('path');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
+var sqlite3 = require('sqlite3');
 
 var app = express();
 var server = require('http').createServer(app);
@@ -100,7 +101,25 @@ app.post('/ops/imgUpload', function(req, res){
 	var exec = require('child_process').exec;
 	// move upload file into object directory, using original file name
 	exec("mv \"" + uploadfile + "\" \"" + targetfile + "\"", output1);
-	
+
+    console.log(JSON.stringify(req.files));
+    var db = new sqlite3.Database('../sqlite/spalatum.db');
+    console.log(tspath);
+    console.log(id);
+    db.serialize(function(){
+       db.run('BEGIN');
+       var stmt = db.prepare('INSERT INTO files VALUES (?, ?, ?, ?, ?)');
+       stmt.run(id, "", tspath, req.files.image.name, "");
+       stmt.finalize();
+       db.run('COMMIT');
+    });
+    
+    var dbSelectStmt = db.prepare('SELECT * FROM files');
+    dbSelectStmt.each(function(err, row){
+        console.log(row);
+    });
+    
+    
     // after mv, run convert to generate .jpg
     function output1(error, stdout, stderr) {
 		exec("convert \"" + targetfile + "\" \"" + outputfile + "\"; identify \"" + outputfile + "\"", output2);
