@@ -109,7 +109,7 @@ app.post('/ops/imgUpload', function(req, res){
     db.serialize(function(){
        db.run('BEGIN');
        var stmt = db.prepare('INSERT INTO files VALUES (?, ?, ?, ?, ?)');
-       stmt.run(id, "", tspath, req.files.image.name, "");
+       stmt.run(id, "", moment(tsstring).format("YYYY/MM/DD") + "/" + id, req.files.image.name, "");
        stmt.finalize();
        db.run('COMMIT');
     });
