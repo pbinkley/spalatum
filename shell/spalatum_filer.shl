@@ -1,0 +1,86 @@
+# FILENAME: spalatum_filer.shl
+# VERSION:  0.3
+# CREATED:  2012-10-18, by the Hackfest gang at Access 2012
+# MODIFIED: 2012-10-21 04:40, by A.L.Waugh 
+# PURPOSE:  A file ingest script. Reads metadata of file placed in dropbox
+# PURPOSE:  and uses the data to store the file in a date-based directory 
+# NOTE:     This script uses the "exiftool" program. (http://www.sno.phy.queensu.ca/~phil/exiftool/)
+#           Testing has only been done with JPG files.
+# WORK STILL NEEDED:
+# -Create ID sub-folders for each incoming file at the "DAY OF MONTH" storage level.
+# -TimeStamp incoming file names to the second. Expect duplicate names of incoming files.(??)
+# -Enable script to handle multiple incoming files. Currently it can only handle a single file in the Dropbox.
+#
+#
+DROPLOC=$HOME'/Local/Dropbox/'
+TARGET=""
+TMPFILE='datestamp.txt'
+LOG="SpalatumFiler.log"
+#
+  cd $HOME/Local
+
+# GET NAME OF FILE(S) IN DROPBOX 
+# Note: Currently this tool can only handle a single file in the Dropbox
+#       Multiple file processing is a future enhancement.
+
+TARGET=$(ls -m $DROPLOC)
+
+if [ -a $DROPLOC$TARGET ]; then
+  exiftool $DROPLOC$TARGET > $LOG
+
+  # GET YEAR FROM METADATA 
+  exiftool $DROPLOC$TARGET | grep 'Create Date' > $TMPFILE
+  MyYr=`sed -e 's/\([a-zA-Z]\)*//g' -e 's/\(:[0-9][0-9]\)*//g' -e 's/\(: \)*//g' -e 's/\( \)*//g' -e 's/\([0-9][0-9]\)$//' <$TMPFILE` 
+  echo Create year is "$MyYr".
+  #
+  # GET MONTH FROM METADATA
+  exiftool $DROPLOC$TARGET | grep 'Create Date' > $TMPFILE
+  MyMo=`sed -e 's/\( \)*//g' -e 's/\([0-9][0-9][0-9][0-9]\)*//g' -e 's/\([a-zA-Z]\)*//g' -e 's/\(::[0-9][0-9]:[0-9][0-9]\)$//g' -e 's/:://' <$TMPFILE` 
+  echo Create month is "$MyMo".
+  #
+  # GET DAY OF MONTH FROM METADATA
+  exiftool $DROPLOC$TARGET | grep 'Create Date' > $TMPFILE
+  MyDay=`sed -e 's/\( \)*//g' -e 's/\([a-zA-Z]\)*//g' -e 's/\([0-9][0-9]:[0-9][0-9]:[0-9][0-9]\)$//g' -e 's/\(:[0-9][0-9][0-9][0-9]:[0-9][0-9]:\)//' <$TMPFILE`
+  echo Day of month created is "$MyDay".
+
+  #
+  # Make YEAR directory if necessary
+  if [ ! -a $MyYr ]; then 
+    mkdir $MyYr
+  fi
+  # Enter YEAR directory
+  if [ -a $MyYr ]; then
+    cd $MyYr
+  fi
+  #
+  # Make MONTH directory if necessary
+  if [ ! -a $MyMo ]; then
+    mkdir $MyMo
+  fi
+  # Enter MONTH directory
+  if [ -a $MyMo ]; then
+    cd $MyMo
+  fi
+
+  #
+  # Make DAY OF MONTH directory if necessary
+  if [ ! -a $MyDay ]; then
+    mkdir $MyDay
+  fi
+  #
+  # Enter DAY OF MONTH directory
+  if [ -a $MyDay ]; then
+    cd $MyDay
+  fi
+
+  if [ -a "$DROPLOC$TARGET" ]; then
+    mv "$DROPLOC$TARGET" .
+  fi
+  #
+else
+  echo No target file found.
+fi
+
+echo All done 
+exit
+
