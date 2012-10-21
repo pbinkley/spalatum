@@ -56,7 +56,7 @@ def dodirs(prefix, parenthtml):
 			item.write("</ul>")
 			endhtml(item)
 
-repo = '../testrepo/'
+repo = '../repo/'
 
 con = lite.connect('spalatum.db')
 
