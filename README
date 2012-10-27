@@ -5,7 +5,9 @@ See Google Doc for planning: https://docs.google.com/document/d/15jTCsEcVvpbQx1X
 Instructions
 
 - install python, node.js
+- create a directory exiftool and put exiftool in it (may be downloaded from <a href="http://owl.phy.queensu.ca/~phil/exiftool/">http://owl.phy.queensu.ca/~phil/exiftool/</a>
 - in sqlite directory, run "createdb.py": creates spalatum.db
+- in NodeJS directory run "npm install -d". If you are on Windows 7, you will need to install Microsoft Visual C++ 2010 and Windows 7 SDK for compiling the sqlite3 module required for updating the database
 - in NodeJS directory run "node app.js" to start the node.js server
 - visit http://localhost:3000/ , and upload some images
 - in sqlite directory, run "intermediates.py" to generate the navigational html
